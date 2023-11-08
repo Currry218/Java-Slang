@@ -1,6 +1,5 @@
 import java.io.*;  // Import the File class
 import java.text.SimpleDateFormat;
-// import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.*; // Import the Scanner class to read text files
 
 /**
@@ -82,9 +81,22 @@ public class Main {
     String key = keys[(int)(Math.random() * keys.length)];
     return key + " " + DefListToStr(slangList.get(key));
   }
-  public static void AddSlangWord()
+  public static void StrToDefList()
   {
-    String s = scanner.nextLine();
 
   }
+  public static void AddSlangWord()
+  {
+    // Enter slang word
+    String nslang = scanner.nextLine();
+    // Enter defenition , sep
+    String ndef = scanner.nextLine();
+
+    if(slangList.get(nslang) == null)
+    {
+      String[] def = ndef.split(",");
+      slangList.put(nslang, Arrays.asList(def));
+    }
+  }
+  
 }

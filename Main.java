@@ -12,6 +12,9 @@ public class Main {
   public static void main(String[] args) {
         FileImport("D:\\CPP\\Java\\CODE\\slang.txt");
         System.out.println(DefListToStr(slangList.get("XS")));
+        UpdateHistory("xs");
+        UpdateHistory("Sm");
+
         
     }
   public static void FileImport(String filename){
@@ -23,7 +26,7 @@ public class Main {
         if(slang.length >1){
           String[] def = slang[1].split("\\| ");
           slangList.put(slang[0], Arrays.asList(def));
-          System.out.println(slangList.get(slang[0]));
+          // System.out.println(slangList.get(slang[0]));
           // System.out.println(data);                
         }
       }
@@ -47,7 +50,7 @@ public class Main {
   }
   public static HashMap<String, List<String>> FindSlang(String searchword)
   {
-    static HashMap<String, List<String>> ans = new HashMap<String, List<String>>();
+    HashMap<String, List<String>> ans = new HashMap<String, List<String>>();
     for(String slang: slangList.keySet())
     {
       String tmp = DefListToStr(slangList.get(slang));
@@ -66,7 +69,7 @@ public class Main {
   }
   public static void UpdateHistory(String searchword)
   {
-    try(BufferedWriter hist = new BufferedWriter(new FileWriter("history.txt", true))) {
+    try(BufferedWriter hist = new BufferedWriter(new FileWriter("history.data", true))) {
           SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
           Date date = new Date();
           hist.write(formatter.format(date)+"`"+ searchword + "\n");           
@@ -81,9 +84,15 @@ public class Main {
     String key = keys[(int)(Math.random() * keys.length)];
     return key + " " + DefListToStr(slangList.get(key));
   }
-  public static void StrToDefList()
+  public static void DeleteSlangWord(String slang)
   {
-
+    if(slangList.get(slang) != null)
+    {
+      slangList.remove(slang);
+      // Remove success
+    }else{
+      // Can't find slang
+    }
   }
   public static void AddSlangWord()
   {
@@ -91,19 +100,17 @@ public class Main {
     String nslang = scanner.nextLine();
     // Enter defenition , sep
     String ndef = scanner.nextLine();
-
+    String[] def = ndef.split(",");
     if(slangList.get(nslang) == null)
     {
-      String[] def = ndef.split(",");
       slangList.put(nslang, Arrays.asList(def));
       //Success
     } else{
-      // User choose duplicate
-      if(1){
-      
+      // User choose duplicate/ add definition
+      if(Math.random() <0.5){
+        slangList.put(nslang, slangList.get(nslang).addAll(Arrays.asList(def)));
       }else{
         //User choose overwrite
-        String[] def = ndef.split(",");
         slangList.put(nslang, Arrays.asList(def));
       }
 

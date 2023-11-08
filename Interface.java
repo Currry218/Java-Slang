@@ -26,6 +26,14 @@ public class Interface {
         southpann.add(DelSlang);
         southpann.add(EditSlang);
 
+        JList slist = new JList();
+        slist.setLayoutOrientation(2);
+
+        JPanel centerpann = new JPanel();
+        centerpann.setBackground(Color.DARK_GRAY);        
+
+        centerpann.add(slist);
+
         JFrame homepage = new JFrame("Slang Dictionary");
         homepage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         homepage.setVisible(true); 
@@ -33,6 +41,7 @@ public class Interface {
         homepage.setLayout(new BorderLayout());
         homepage.add(northpann, BorderLayout.NORTH);
         homepage.add(southpann, BorderLayout.SOUTH);
+        homepage.add(centerpann, BorderLayout.CENTER);
         // homepage.add(WordSearch, BorderLayout.NORTH);
         // homepage.add(DefSearch, BorderLayout.SOUTH);
         homepage.pack();

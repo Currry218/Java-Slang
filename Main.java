@@ -94,27 +94,27 @@ public class Main {
       // Can't find slang
     }
   }
-  public static void AddSlangWord()
-  {
-    // Enter slang word
-    String nslang = scanner.nextLine();
-    // Enter defenition , sep
-    String ndef = scanner.nextLine();
-    String[] def = ndef.split(",");
-    if(slangList.get(nslang) == null)
-    {
-      slangList.put(nslang, Arrays.asList(def));
-      //Success
-    } else{
-      // User choose duplicate/ add definition
-      if(Math.random() <0.5){
-        slangList.put(nslang, slangList.get(nslang).addAll(Arrays.asList(def)));
-      }else{
-        //User choose overwrite
-        slangList.put(nslang, Arrays.asList(def));
-      }
+  // public static void AddSlangWord()
+  // {
+  //   // Enter slang word
+  //   String nslang = scanner.nextLine();
+  //   // Enter defenition , sep
+  //   String ndef = scanner.nextLine();
+  //   String[] def = ndef.split(",");
+  //   if(slangList.get(nslang) == null)
+  //   {
+  //     slangList.put(nslang, Arrays.asList(def));
+  //     //Success
+  //   } else{
+  //     // User choose duplicate/ add definition
+  //     if(Math.random() <0.5){
+  //       slangList.put(nslang, slangList.get(nslang).addAll(Arrays.asList(def)));
+  //     }else{
+  //       //User choose overwrite
+  //       slangList.put(nslang, Arrays.asList(def));
+  //     }
 
-    }
-  }
+  //   }
+  // }
   
 }

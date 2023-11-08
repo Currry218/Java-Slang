@@ -96,6 +96,17 @@ public class Main {
     {
       String[] def = ndef.split(",");
       slangList.put(nslang, Arrays.asList(def));
+      //Success
+    } else{
+      // User choose duplicate
+      if(1){
+      
+      }else{
+        //User choose overwrite
+        String[] def = ndef.split(",");
+        slangList.put(nslang, Arrays.asList(def));
+      }
+
     }
   }
   

@@ -5,29 +5,34 @@ public class Interface {
     public static void createAndShowGUI(){
 
         JTextField searchbar = new JTextField(20);
-        // searchbar.setMinimumSize(new Dimension(50, 50));
         JButton WordSearch = new JButton("Search by word");
-        // WordSearch.setPreferredSize(new Dimension(10, 10));
-
         JButton DefSearch = new JButton("Search by definition");
-        // DefSearch.setPreferredSize(new Dimension(10, 10));
+
+        JPanel northpann = new JPanel();
+        northpann.setBackground(Color.PINK);
+        northpann.add(searchbar);
+        northpann.add(WordSearch);
+        northpann.add(DefSearch);
+
+        JButton addSlang = new JButton("Add");
+        addSlang.getPreferredSize();
+        JButton DelSlang = new JButton("Delete");
+        JButton EditSlang = new JButton("Edit");       
 
         JPanel southpann = new JPanel();
-        southpann.setBackground(Color.PINK);
-        southpann.add(searchbar);
-        southpann.add(WordSearch);
-        southpann.add(DefSearch);
+        southpann.setBackground(Color.CYAN);
 
-        JPanel eastpann = new JPanel();
-        eastpann.setBackground(Color.CYAN);
-        
+        southpann.add(addSlang);
+        southpann.add(DelSlang);
+        southpann.add(EditSlang);
+
         JFrame homepage = new JFrame("Slang Dictionary");
         homepage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         homepage.setVisible(true); 
-        homepage.setSize(500, 500);
+        // homepage.setSize(500, 500);
         homepage.setLayout(new BorderLayout());
-        homepage.add(southpann, BorderLayout.NORTH);
-        homepage.add(eastpann, BorderLayout.WEST);
+        homepage.add(northpann, BorderLayout.NORTH);
+        homepage.add(southpann, BorderLayout.SOUTH);
         // homepage.add(WordSearch, BorderLayout.NORTH);
         // homepage.add(DefSearch, BorderLayout.SOUTH);
         homepage.pack();

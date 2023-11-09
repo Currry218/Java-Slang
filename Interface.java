@@ -7,31 +7,22 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 
 import java.util.*;
+import java.util.List;
 public class Interface {
     public static SlangList sl = new SlangList("slang.txt");
 
-    // public static String[][] slToTable()
-    // {
-    //     String[][] tab = new String[sl.slangList.size()][2];
-    //     int tmp = 0;
-    //     for(String i : sl.slangList.keySet())
-    //     {
-    //         tab[tmp][0] = i;
-    //         tab[tmp++][1] = sl.DefListToStr(sl.slangList.get(i));
-    //     }        
-    //     return tab;
-    // }
-    public static String[][] slToTable()
+    public static String[][] MapToArray(HashMap<String, String> hmap)
     {
-        String[][] tab = new String[sl.slangList.size()][2];
+        String[][] tab = new String[hmap.size()][2];
         int tmp = 0;
-        for(String i : sl.slangList.keySet())
+        for(String i : hmap.keySet())
         {
             tab[tmp][0] = i;
-            tab[tmp++][1] = sl.DefListToStr(sl.slangList.get(i));
+            tab[tmp++][1] = hmap.get(i);
         }        
         return tab;
     }
+
     public static ArrayList<String> GetHistoryList()
     {
         ArrayList<String> hlist = new ArrayList<String>();
@@ -50,20 +41,76 @@ public class Interface {
     }
 
     public static void createAndShowGUI(){
-
-        JPanel northpann = new JPanel();
-        northpann.setBackground(Color.PINK);
-        // northpann.setLayout(new BoxLayout(northpann,BoxLayout.PAGE_AXIS));
-        northpann.setLayout(new BorderLayout());
-        northpann.setPreferredSize(new Dimension(100, 100) );
-
+//----------------------------COMPONENT----------------------------
+        //----------------------NORTH----------------------
         JTextField searchbar = new JTextField(20);
         JButton WordSearch = new JButton("Search by slang");
         JButton DefSearch = new JButton("Search by definition");
-        JButton hisButton = new JButton("History");
-
+        
+        JButton hisButton = new JButton("History");        
+        JFrame history = new JFrame("History");
+        history.add(new JScrollPane(new JList(GetHistoryList().toArray())));
+        
         JLabel lab1 = new JLabel("LAB01", JLabel.CENTER);
-        JLabel lab2 = new JLabel("LAB02", JLabel.CENTER);
+        JLabel lab2 = new JLabel("LAB02", JLabel.CENTER);        
+        
+         //----------------------SOUTH----------------------
+        JLabel dictlabel = new JLabel("Dictionary edit: ");
+        JButton addSlang = new JButton("Add");
+        JButton DelSlang = new JButton("Delete");
+        JButton EditSlang = new JButton("Edit");       
+        
+         //----------------------CENTER----------------------
+        String[] colName = {"Slang", "Definition"};
+        JTable tables = new JTable(MapToArray(sl.slangList),colName);
+        tables.setEnabled(false);
+        tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        TableColumnModel colModel=tables.getColumnModel();
+        colModel.getColumn(0).setPreferredWidth(50);    
+        colModel.getColumn(1).setPreferredWidth(400);
+        JScrollPane slist = new JScrollPane(tables);
+
+//----------------------------PANEL----------------------------        
+        
+        //----------------------NORTH----------------------
+        JPanel northpann = new JPanel();
+        northpann.setBackground(Color.PINK);
+        northpann.setLayout(new BorderLayout());
+        northpann.setPreferredSize(new Dimension(100, 100) );        
+        
+        JPanel upper = new JPanel();
+        upper.setBackground(Color.blue);
+        upper.add(searchbar);
+        upper.add(WordSearch);
+        upper.add(DefSearch);
+        upper.add(hisButton);
+        northpann.add(upper, BorderLayout.NORTH);
+        northpann.add(lab1, BorderLayout.CENTER);  
+
+        //----------------------SOUTH----------------------
+        JPanel southpann = new JPanel();
+        southpann.setBackground(Color.CYAN);
+        southpann.add(dictlabel);
+        southpann.add(addSlang);
+        southpann.add(DelSlang);
+        southpann.add(EditSlang);
+        
+         //----------------------CENTER----------------------      
+        JPanel centerpann = new JPanel();
+        centerpann.setBackground(Color.DARK_GRAY);   
+        centerpann.setLayout(new BorderLayout());    
+        centerpann.add(slist, BorderLayout.CENTER);
+
+        //----------------------EAST----------------------
+        JPanel eastpann = new JPanel();
+        eastpann.setBackground(Color.ORANGE);   
+        eastpann.setMinimumSize(new Dimension(20,20));
+        eastpann.add(new JLabel(sl.OnThisDaySlangWord()));    
+
+
+
+//----------------------------ACTIONLISTENER----------------------------
+        //----------------------NORTH----------------------
         WordSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lab1.setText(sl.FindDef(searchbar.getText()));
@@ -80,8 +127,6 @@ public class Interface {
                 northpann.add(lab2, BorderLayout.CENTER);
             }
         });
-        JFrame history = new JFrame("History");
-        history.add(new JScrollPane(new JList(GetHistoryList().toArray())));
         hisButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 history.pack();
@@ -90,35 +135,7 @@ public class Interface {
             }
         });
 
-
-
-
-        JPanel upper = new JPanel();
-        upper.setBackground(Color.blue);
-        upper.add(searchbar);
-        upper.add(WordSearch);
-        upper.add(DefSearch);
-        upper.add(hisButton);
-        northpann.add(upper, BorderLayout.NORTH);
-        northpann.add(lab1, BorderLayout.CENTER);
-        // northpann.add(lab2, BorderLayout.SOUTH);
-
-
-        JLabel dictlabel = new JLabel("Dictionary edit: ");
-        JButton addSlang = new JButton("Add");
-        addSlang.getPreferredSize();
-        JButton DelSlang = new JButton("Delete");
-        JButton EditSlang = new JButton("Edit");       
-
-        JPanel southpann = new JPanel();
-        southpann.setBackground(Color.CYAN);
-        southpann.add(dictlabel);
-        southpann.add(addSlang);
-        southpann.add(DelSlang);
-        southpann.add(EditSlang);
-        
-        // JFrame 
-        // JFrame editframe = new JFrame();
+         //----------------------EAST----------------------
         addSlang.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 
@@ -136,36 +153,8 @@ public class Interface {
 
             }
         });
-        // JPanel 
-
-
-        // JScrollPane slist = new JScrollPane(new JList(sl.slangList.keySet().toArray()));
-        String[] colName = {"Slang", "Definition"};
-        JTable tables = new JTable(slToTable(),colName);
-        tables.setEnabled(false);
-        tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        TableColumnModel colModel=tables.getColumnModel();
-        colModel.getColumn(0).setPreferredWidth(50);    
-        colModel.getColumn(1).setPreferredWidth(400);
-        JScrollPane slist = new JScrollPane(tables);
-
-        // JTable table = new JTable(sl.slangList.keySet().toArray(),colName);
-        // slist.set
-        // JList deflist = new JList(sl.slangList.keySet().toArray());
         
-        // slist.setLayoutOrientation(2);
-
-        JPanel centerpann = new JPanel();
-        centerpann.setBackground(Color.DARK_GRAY);   
-        centerpann.setLayout(new CardLayout());     
-        centerpann.add(slist);
-        // centerpann.add(deflist);
-
-        JPanel eastpann = new JPanel();
-        eastpann.setBackground(Color.ORANGE);   
-        eastpann.setMinimumSize(new Dimension(20,20));
-        eastpann.add(new JLabel(sl.OnThisDaySlangWord()));    
-
+         //----------------------HOME----------------------
         JFrame homepage = new JFrame("Slang Dictionary");
         homepage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         homepage.setVisible(true); 

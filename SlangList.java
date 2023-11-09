@@ -7,6 +7,7 @@ import java.util.*; // Import the Scanner class to read text files
  */
 public class SlangList {
   public static HashMap<String, List<String>> slangList = new HashMap<String, List<String>>();
+
   public static Scanner scanner = new Scanner(System.in);
   // get(slang), remove(slang), clear() : all
 
@@ -37,12 +38,13 @@ public class SlangList {
     String ans = "";
     for(String def: deflist)
     {
-      ans += ", " + def;
+      ans += " | " + def;
     }
-    return ans.substring(2);
+    return ans.substring(3);
   }
   public static HashMap<String, List<String>> FindSlang(String searchword)
   {
+    UpdateHistory(searchword);
     HashMap<String, List<String>> ans = new HashMap<String, List<String>>();
     for(String slang: slangList.keySet())
     {
@@ -54,6 +56,7 @@ public class SlangList {
     return ans;
   }
   public static String FindDef(String searchword){
+    UpdateHistory(searchword);
     String ans = DefListToStr(slangList.get(searchword));
     if(ans == ""){
       return "Can\'t find the definitions of this slang";
@@ -73,8 +76,8 @@ public class SlangList {
     }
   }
   public static String OnThisDaySlangWord() {
-    String[] keys = (String[]) slangList.keySet().toArray();
-    String key = keys[(int)(Math.random() * keys.length)];
+    Object[] keys = slangList.keySet().toArray();
+    String key = keys[(int)(Math.random() * keys.length)].toString();
     return key + " " + DefListToStr(slangList.get(key));
   }
   public static void DeleteSlangWord(String slang)
@@ -87,27 +90,23 @@ public class SlangList {
       // Can't find slang
     }
   }
-  // public static void AddSlangWord()
-  // {
-  //   // Enter slang word
-  //   String nslang = scanner.nextLine();
-  //   // Enter defenition , sep
-  //   String ndef = scanner.nextLine();
-  //   String[] def = ndef.split(",");
-  //   if(slangList.get(nslang) == null)
-  //   {
-  //     slangList.put(nslang, Arrays.asList(def));
-  //     //Success
-  //   } else{
-  //     // User choose duplicate/ add definition
-  //     if(Math.random() <0.5){
-  //       slangList.put(nslang, slangList.get(nslang).addAll(Arrays.asList(def)));
-  //     }else{
-  //       //User choose overwrite
-  //       slangList.put(nslang, Arrays.asList(def));
-  //     }
+  public static void AddSlangWord(String nslang, String ndef)
+  {
+    String[] def = ndef.split(",");
+    if(slangList.get(nslang) == null)
+    {
+      slangList.put(nslang, Arrays.asList(def));
+      //Success
+    } else{
+      // User choose duplicate/ add definition
+      if(Math.random() <0.5){
+        slangList.put(nslang, slangList.get(nslang).addAll(Arrays.asList(def)));
+      }else{
+        //User choose overwrite
+        slangList.put(nslang, Arrays.asList(def));
+      }
 
-  //   }
-  // }
+    }
+  }
   
 }

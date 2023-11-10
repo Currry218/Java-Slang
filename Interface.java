@@ -503,6 +503,7 @@ public class Interface {
                 d.removeRow(row);
                 d.insertRow(row, tmp);
                 tables.setModel(d);
+                editPage.setVisible(false);
             }
         });        
         // https://stackoverflow.com/a/7351053
@@ -510,6 +511,7 @@ public class Interface {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 row = tables.rowAtPoint(evt.getPoint());
+                // System.out.println(row);
             }
         });
 

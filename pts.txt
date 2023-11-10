@@ -3,6 +3,7 @@ Link tham khảo chức năng:
 Khóa bảng:https://stackoverflow.com/a/3134006
 Chỉnh độ rộng cột: https://stackoverflow.com/a/43301100
 Lấy số dòng/cột: https://stackoverflow.com/a/7351053
+Xử lý file khi exit: https://stackoverflow.com/a/9093526
 Chức năng tìm kiếm theo slang word.
 10/100
 Chức năng tìm kiếm theo definition, hiển thị ra tất cả các slang words mà trong defintion có chứa keyword gõ vào.

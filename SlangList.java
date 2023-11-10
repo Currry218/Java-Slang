@@ -7,7 +7,6 @@ import java.util.*; // Import the Scanner class to read text files
  */
 public class SlangList {
   public static HashMap<String, String> slangList = new HashMap<String, String>();
-  
   public static Scanner scanner = new Scanner(System.in);
   // get(slang), remove(slang), clear() : all
 
@@ -47,7 +46,7 @@ public class SlangList {
   public static void SaveList(){
     try(BufferedWriter data = new BufferedWriter(new FileWriter("slangedit.data"))) {
       for(String slang: slangList.keySet())
-        data.write(slang + "`" + slangList.get(slang).replace(" | ", "| "));           
+        data.write(slang + "`" + slangList.get(slang).replace(" | ", "| ") + "\n");           
       data.close();
     } catch (IOException e) {
       System.out.println("An error occurred.");
@@ -131,6 +130,7 @@ public class SlangList {
         //User choose overwrite
         slangList.put(nslang, ndef);
       }
+    
 
     }
     
@@ -140,5 +140,41 @@ public class SlangList {
     slangList.remove(oldslang);
     slangList.put(nslang, ndef);
   }
+  public static String[] GetQuiz(boolean isSlangQuiz)
+  {
+    String[] ans = new String[6];
+    Object[] keys = slangList.keySet().toArray();
+    Random r = new Random();
+    if(isSlangQuiz)
+    {
+      // random.nextInt(max - min) + min;
+      int ques = r.nextInt(keys.length);
+      ans[0] = keys[ques].toString();
+      int ans_idx = r.nextInt(4) + 1;
+      ans[ans_idx] = slangList.get(keys[ques]);
+      ans[5] = Integer.toString(ans_idx);
+      for(int i = 1; i <= 4; i++)
+      {
+        if(ans[i] == null){
+          ans[i] = slangList.get(keys[r.nextInt(keys.length)]);
+        }
+      }
+    }
+    else
+    {
+      int ques = r.nextInt(keys.length);
+      int ans_idx = r.nextInt(4) + 1;
+      ans[0] = slangList.get(keys[ques]);
+      ans[ans_idx] = keys[ques].toString();
+      ans[5] = Integer.toString(ans_idx);
+      for(int i = 1; i <= 4; i++)
+      {
+        if(ans[i] == null){
+          ans[i] = keys[r.nextInt(keys.length)].toString();
+        }
+      }
+    }
+    return ans;
 
+  }
 }

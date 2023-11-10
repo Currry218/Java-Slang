@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.util.*;
+import java.util.List;
 public class Interface {
     public static SlangList sl = new SlangList("slangedit.data");
     public static String[][] dataTable = MapToArray(sl.slangList);
+    static String right_ans = "0";
     static int row = -1;
+
     public static String[][] MapToArray(HashMap<String, String> hmap)
     {
         String[][] tab = new String[hmap.size()][3];
@@ -34,7 +38,6 @@ public class Interface {
         };
         JTable tables = new JTable(tableModel);
         tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-
         // https://stackoverflow.com/a/43301100
         tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         TableColumnModel colModel = tables.getColumnModel();
@@ -60,7 +63,10 @@ public class Interface {
         }
         return hlist;
     }
+    public static void Change(HashMap<String, String> hmap) {
+        dataTable = MapToArray(hmap);
 
+    }
     public static void createAndShowGUI(){
 //----------------------------COMPONENT----------------------------
         //----------------------NORTH----------------------
@@ -68,67 +74,60 @@ public class Interface {
         JButton WordSearch = new JButton("Search by slang");
         JButton DefSearch = new JButton("Search by definition");
         JButton hisButton = new JButton("History");        
+        JButton quizz = new JButton("Quiz");
         
         JPanel searchpann = new JPanel();
-        searchpann.setBackground(Color.blue);
         searchpann.add(searchbar);
         searchpann.add(WordSearch);
         searchpann.add(DefSearch);
         searchpann.add(hisButton);
-
-        JLabel lab1 = new JLabel("LAB01", JLabel.CENTER);
-        JLabel lab2 = new JLabel("LAB02", JLabel.CENTER);        
+        searchpann.add(quizz);
+        JLabel dailySlang = new JLabel(sl.OnThisDaySlangWord());
+        dailySlang.setFont(new Font("Verdana", Font.PLAIN, 17));
+        dailySlang.setHorizontalAlignment(JLabel.CENTER);
         
          //----------------------SOUTH----------------------
         JLabel dictlabel = new JLabel("Dictionary edit: ");
         JButton addSlang = new JButton("Add");
         JButton DelSlang = new JButton("Delete");
         JButton EditSlang = new JButton("Edit");       
+        JButton res = new JButton("Reset");
         
          //----------------------CENTER----------------------
         String[] colName = {"No.","Slang", "Definition"};
-
         JTable tables = createTable(dataTable, colName);
+        // JList<String> lists = new JList<String>();
         JScrollPane slist = new JScrollPane(tables);
 
-        // JTable tabs = new JTable(3,2);
 
-        //----------------------EAST----------------------
-        JLabel dailySlang = new JLabel(sl.OnThisDaySlangWord());
-        dailySlang.setFont(new Font("Verdana", Font.PLAIN, 17));
-        dailySlang.setHorizontalAlignment(JLabel.CENTER);
-        JButton res = new JButton("Reset");
 //----------------------------PANEL----------------------------        
         
         //----------------------NORTH----------------------
         JPanel northpann = new JPanel();
-        northpann.setBackground(Color.PINK);
         northpann.setLayout(new BorderLayout());
         northpann.setPreferredSize(new Dimension(100, 100) );        
         
 
         northpann.add(dailySlang, BorderLayout.CENTER);
         northpann.add(searchpann, BorderLayout.NORTH);
-        // northpann.add(lab1, BorderLayout.CENTER);  
+        
 
         //----------------------SOUTH----------------------
         JPanel southpann = new JPanel();
-        southpann.setBackground(Color.CYAN);
         southpann.add(dictlabel);
         southpann.add(addSlang);
         southpann.add(DelSlang);
         southpann.add(EditSlang);
         southpann.add(res);
+        
          //----------------------CENTER----------------------      
         JPanel centerpann = new JPanel();
-        centerpann.setBackground(Color.DARK_GRAY);   
         centerpann.setLayout(new CardLayout());
         // centerpann.setLayout(new BorderLayout());    
-        centerpann.add(slist);
+        centerpann.add(slist, "");
 
         //----------------------EAST----------------------
         JPanel eastpann = new JPanel();
-        eastpann.setBackground(Color.ORANGE);   
         eastpann.setLayout(new BoxLayout(eastpann, BoxLayout.X_AXIS));
         // eastpann.setPreferredSize(new Dimension(100,400));
         // eastpann.add(dailySlang);    
@@ -136,6 +135,14 @@ public class Interface {
 //----------------------------FRAME----------------------------
         //----------------------HOME----------------------
         JFrame homepage = new JFrame("Slang Dictionary");
+        // https://stackoverflow.com/a/9093526
+        homepage.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                sl.SaveList();
+                System.exit(0);
+            }
+        });
         homepage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         homepage.setVisible(true); 
         homepage.setMinimumSize(new Dimension(1000, 600));
@@ -144,7 +151,7 @@ public class Interface {
         homepage.add(southpann, BorderLayout.SOUTH);
         homepage.add(centerpann, BorderLayout.CENTER);
         homepage.add(eastpann, BorderLayout.EAST);
-        // homepage.setResizable(false); 
+        homepage.setResizable(false); 
         homepage.setLocationRelativeTo(null);
 
         //----------------------EDIT----------------------
@@ -172,6 +179,7 @@ public class Interface {
         editPage.add(dcontainer_edit, BorderLayout.CENTER);
         editPage.add(btncont_edit, BorderLayout.SOUTH);
         editPage.pack();
+        editPage.setResizable(false); 
         editPage.setLocationRelativeTo(null);
 
         //----------------------ADD----------------------
@@ -199,6 +207,7 @@ public class Interface {
         addPage.add(dcontainer_add, BorderLayout.CENTER);
         addPage.add(btncont_add, BorderLayout.SOUTH);
         addPage.pack();
+        addPage.setResizable(false); 
         addPage.setLocationRelativeTo(null);
 
         //----------------------DELETE----------------------
@@ -218,27 +227,69 @@ public class Interface {
         deletePage.add(scontainer_delete, BorderLayout.NORTH);
         deletePage.add(btncont_delete, BorderLayout.SOUTH);
         deletePage.pack();
+        deletePage.setResizable(false); 
         deletePage.setLocationRelativeTo(null);
+
+        //----------------------QUIZ----------------------
+        JFrame quiz = new JFrame("Quiz");
+        quiz.setLayout(new BorderLayout());
+        JPanel anscont = new JPanel();
+        anscont.setLayout(new GridLayout(2,2));
+
+        JPanel btncont = new JPanel();
+
+        JLabel question = new JLabel(" ");
+        question.setFont(new Font("Verdana", Font.PLAIN, 20));
+        question.setHorizontalAlignment(JLabel.CENTER);
+        question.setPreferredSize(new Dimension(700,150));
+        JButton ans1 = new JButton("");
+        JButton ans2 = new JButton("");
+        JButton ans3 = new JButton("");
+        JButton ans4 = new JButton("");
+        JButton toDef = new JButton("Guess Definition");
+        JButton toSlang = new JButton("Guess Slang");
+
+        anscont.add(ans1);
+        anscont.add(ans2);
+        anscont.add(ans3);
+        anscont.add(ans4);
+
+        btncont.add(toDef);
+        btncont.add(toSlang);
+
+        quiz.add(question, BorderLayout.NORTH);
+        quiz.add(anscont, BorderLayout.CENTER);
+        quiz.add(btncont, BorderLayout.SOUTH);
+        quiz.setMinimumSize(new Dimension(700,400));
+        quiz.setResizable(false); 
+        quiz.setLocationRelativeTo(null);
 
 //----------------------------ACTIONLISTENER----------------------------
         //----------------------NORTH----------------------
         WordSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // tables.setVisible(false);
-                // centerpann.remove(slist);
-                // centerpann.setVisible(false);
-                // slist.remove(tables);
                 JTable ans = createTable(MapToArray(sl.FindDef(searchbar.getText())), colName);
-                ans.setVisible(true);
-                slist.setVisible(false);
-                centerpann.add(ans);
+                JFrame search = new JFrame("Slang search");
+                search.setLayout(new BorderLayout());
                 // centerpann.setLayout(null);
-                // homepage.add(createTable(MapToArray(sl.FindDef(searchbar.getText())), colName), BorderLayout.CENTER);
+                JScrollPane anslist = new JScrollPane(ans);
+                search.add(anslist, BorderLayout.CENTER);
+                search.setMinimumSize(new Dimension(1000, 500));
+                search.setVisible(true);
+                search.setLocationRelativeTo(null);
             }
         });
         DefSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                
+                JTable ans = createTable(MapToArray(sl.FindSlang(searchbar.getText())), colName);
+                JFrame search = new JFrame("Slang search");
+                search.setLayout(new BorderLayout());
+                // centerpann.setLayout(null);
+                JScrollPane anslist = new JScrollPane(ans);
+                search.add(anslist, BorderLayout.CENTER);
+                search.setMinimumSize(new Dimension(1000, 500));
+                search.setVisible(true);
+                search.setLocationRelativeTo(null);
             }
         });
         hisButton.addActionListener(new ActionListener() {
@@ -252,7 +303,7 @@ public class Interface {
             }
         });
 
-         //----------------------EAST----------------------
+         //----------------------SOUTH----------------------
         addSlang.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // centerpann.add(tabs, BorderLayout.CENTER);   
@@ -278,15 +329,106 @@ public class Interface {
 
             }
         });
-         res.addActionListener(new ActionListener() {
+        res.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dailySlang.setText(sl.OnThisDaySlangWord());
                 sl.ResetList();
             }
-        });       abtn_add.addActionListener(new ActionListener() {
+        });       
+        quizz.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String[] a = sl.GetQuiz(false);
+                
+                question.setText(a[0]);
+                ans1.setText(a[1]);
+                ans2.setText(a[2]);
+                ans3.setText(a[3]);
+                ans4.setText(a[4]);
+                right_ans = a[5];
+                quiz.setVisible(true);
+            }
+            
+        });          
+
+        toDef.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ans1.setBackground(null);
+                ans2.setBackground(null);
+                ans3.setBackground(null);
+                ans4.setBackground(null);
+
+                String[] a = sl.GetQuiz(true);
+                question.setText(a[0]);
+                ans1.setText(a[1]);
+                ans2.setText(a[2]);
+                ans3.setText(a[3]);
+                ans4.setText(a[4]);
+                right_ans = a[5];
+            }
+        });         
+
+        toSlang.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ans1.setBackground(null);
+                ans2.setBackground(null);
+                ans3.setBackground(null);
+                ans4.setBackground(null);
+
+                String[] a = sl.GetQuiz(false);
+                question.setText(a[0]);
+                ans1.setText(a[1]);
+                ans2.setText(a[2]);
+                ans3.setText(a[3]);
+                ans4.setText(a[4]);
+                right_ans = a[5];
+            }
+        });  
+
+        ans1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(right_ans.contains("1")) {
+                    ans1.setBackground(Color.GREEN);
+                } else {
+                    ans1.setBackground(Color.RED);
+                }
+            }
+        });   
+        ans2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(right_ans.contains("2")) {
+                    ans2.setBackground(Color.GREEN);
+                } else {
+                    ans2.setBackground(Color.RED);
+                }
+            }
+        }); 
+
+        ans3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(right_ans.contains("3")) {
+                    ans3.setBackground(Color.GREEN);
+                } else {
+                    ans3.setBackground(Color.RED);
+                }
+            }
+        }); 
+
+        ans4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(right_ans.contains("4")) {
+                    ans4.setBackground(Color.GREEN);
+                } else {
+                    ans4.setBackground(Color.RED);
+                }
+            }
+        }); 
+        abtn_add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 addPage.setVisible(false);
                 sl.AddSlangWord(slangbox_add.getText(), defbox_add.getText(), true);
+                DefaultTableModel d = (DefaultTableModel)tables.getModel();
+                d.setValues(dataTable);
+                tables.setModel(d);
             }
         });        
         abtn_delete.addActionListener(new ActionListener() {
@@ -311,8 +453,6 @@ public class Interface {
                 row = tables.rowAtPoint(evt.getPoint());
             }
         });
-        // tables.listener
-        //instance table model
 
 
     }

@@ -1,4 +1,4 @@
-Link youtube: 
+Link youtube: https://youtu.be/iPiXpnKqE_Y
 Link tham khảo chức năng:
 Khóa bảng:https://stackoverflow.com/a/3134006
 Chỉnh độ rộng cột: https://stackoverflow.com/a/43301100
@@ -11,16 +11,17 @@ Chức năng tìm kiếm theo definition, hiển thị ra tất cả các slang 
 Chức năng hiển thị history, danh sách các slang word đã tìm kiếm.
 10/100
 Chức năng add 1 slang words mới. Nếu slang words trùng thì thông báo cho người dùng, confirm có overwrite hay duplicate ra 1 slang word mới.
+8/100
+Nếu trùng tự động thêm definition được nhập vào
+Chức năng edit 1 slang word.
 10/100
-Chức năng add 1 slang word.
-10/100
-Chức năng add 1 slang word. Confirm trước khi xoá.
+Chức năng delete 1 slang word. Confirm trước khi xoá.
 10/100
 Chức năng reset danh sách slang words gốc.
 10/100
 Chức năng random 1 slang word (On this day slang word).
 10/100
 Chức năng đố vui, chương trình hiển thị 1 random slang word, với 4 đáp án cho người dùng chọn.
-0/100
+10/100
 Chức năng đố vui, chương trình hiển thị 1 definition, với 4 slang words đáp án cho người dùng chọn.
-0/100
+10/100

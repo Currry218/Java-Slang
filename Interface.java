@@ -2,14 +2,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.util.*;
 import java.util.List;
-public class Interface {
+// import Slanglist.*;
+public class Interface{
     public static SlangList sl = new SlangList("slangedit.data");
     static String right_ans = "0";
     static int row = -1;

@@ -18,7 +18,7 @@ public class SlangList {
       while (myReader.hasNextLine()) {
         String[] slang = myReader.nextLine().split("`");
         if(slang.length >1){
-          slangList.put(slang[0], slang[1]);              
+          slangList.put(slang[0], slang[1].replace("|", " |"));              
         }
       }
       myReader.close();
@@ -27,41 +27,68 @@ public class SlangList {
       e.printStackTrace();
     }
   }
-  // public static String DefListToStr(String deflist)
-  // {
-  //   if(deflist == null){
-  //     return "";
-  //   }
-  //   String ans = "";
-  //   for(String def: deflist)
-  //   {
-  //     ans += ", " + def;
-  //   }
-  //   return ans.substring(2);
-  // }
-  public static HashMap<String, String> FindSlang(String searchword)
+  public static void ResetList(){
+    try {
+      File myObj = new File("slang.txt");
+      slangList.clear();
+      Scanner myReader = new Scanner(myObj);
+      while (myReader.hasNextLine()) {
+        String[] slang = myReader.nextLine().split("`");
+        if(slang.length >1){
+          slangList.put(slang[0], slang[1].replace("|", " |"));              
+        }
+      }
+      myReader.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
+  }
+  public static void SaveList(){
+    try(BufferedWriter data = new BufferedWriter(new FileWriter("slangedit.data"))) {
+      for(String slang: slangList.keySet())
+        data.write(slang + "`" + slangList.get(slang).replace(" | ", "| "));           
+      data.close();
+    } catch (IOException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
+  }
+  public static HashMap<String, String> FindSlang(String searchword) //Find by def
   {
+    searchword = searchword.toUpperCase();
     UpdateHistory(searchword);
     HashMap<String, String> ans = new HashMap<String, String>();
     for(String slang: slangList.keySet())
     {
-      String tmp = slangList.get(slang);
-      if(tmp.contains(searchword)){
+      if(slangList.get(slang).toUpperCase().contains(searchword)){
         ans.put(slang,slangList.get(slang));
       }
     }
     return ans;
   }
-  public static String FindDef(String searchword){
+  public static HashMap<String, String> FindDef(String searchword){
+    // UpdateHistory(searchword);
+    // String ans = slangList.get(searchword);
+    // if(ans == ""){
+    //   return "Can\'t find the definitions of this slang";
+    // }
+    // return ans;
+    searchword = searchword.toUpperCase();
     UpdateHistory(searchword);
-    String ans = slangList.get(searchword);
-    if(ans == ""){
-      return "Can\'t find the definitions of this slang";
+    HashMap<String, String> ans = new HashMap<String, String>();
+    for(String slang: slangList.keySet())
+    {
+      if(slang.contains(searchword)){
+        ans.put(slang,slangList.get(slang));
+      }
     }
     return ans;
   }
   public static void UpdateHistory(String searchword)
   {
+    if(searchword == "")
+      return;
     try(BufferedWriter hist = new BufferedWriter(new FileWriter("history.data", true))) {
           SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
           Date date = new Date();
@@ -76,7 +103,7 @@ public class SlangList {
     Object[] keys = slangList.keySet().toArray();
     Random r = new Random();
     String key = keys[r.nextInt(keys.length)].toString();
-    return key + " " + slangList.get(key);
+    return key + ": " + slangList.get(key);
   }
   public static String DeleteSlangWord(String slang)
   {
@@ -90,7 +117,7 @@ public class SlangList {
       // Can't find slang
     }
   }
-  public static void AddSlangWord(String nslang, String ndef)
+  public static void AddSlangWord(String nslang, String ndef, boolean dup)
   {
     if(slangList.get(nslang) == null)
     {
@@ -98,7 +125,7 @@ public class SlangList {
       //Success
     } else{
       // User choose duplicate/ add definition
-      if(Math.random() <0.5){
+      if(dup){
         slangList.put(nslang, slangList.get(nslang) + ndef);
       }else{
         //User choose overwrite
@@ -106,6 +133,12 @@ public class SlangList {
       }
 
     }
+    
   }
-  
+  public static void Edit(String oldslang, String nslang, String ndef)
+  {
+    slangList.remove(oldslang);
+    slangList.put(nslang, ndef);
+  }
+
 }

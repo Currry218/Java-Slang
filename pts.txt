@@ -12,7 +12,7 @@ Chức năng hiển thị history, danh sách các slang word đã tìm kiếm.
 10/100
 Chức năng add 1 slang words mới. Nếu slang words trùng thì thông báo cho người dùng, confirm có overwrite hay duplicate ra 1 slang word mới.
 8/100
-Nếu trùng tự động thêm definition được nhập vào
+Nếu trùng thì thêm definition được nhập vào hoặc ghi đè, không có duplicate
 Chức năng edit 1 slang word.
 10/100
 Chức năng delete 1 slang word. Confirm trước khi xoá.

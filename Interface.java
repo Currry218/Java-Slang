@@ -3,14 +3,16 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+// import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.util.*;
-import java.util.List;
+// import java.util.List;
 // import Slanglist.*;
 public class Interface{
     public static SlangList sl = new SlangList("slangedit.data");
+    static String[] colName = {"No.","Slang", "Definition"};
+    public static DefaultTableModel org_list = createModel(MapToArray(sl.slangList));
     static String right_ans = "0";
     static int row = -1;
     public static String getKeyFromIdx(int idx)
@@ -55,6 +57,26 @@ public class Interface{
         }
         return hlist;
     }
+    public static void setTable(JTable tables)
+    {
+        tables.setFont(new Font("Verdana", Font.PLAIN, 12));
+        // https://stackoverflow.com/a/43301100
+        tables.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        TableColumnModel colModel = tables.getColumnModel();
+        colModel.getColumn(0).setPreferredWidth(50);    
+        colModel.getColumn(1).setPreferredWidth(200);
+        colModel.getColumn(2).setPreferredWidth(750);
+        tables.setVisible(true);
+    }
+    public static DefaultTableModel createModel(String[][] data){
+        DefaultTableModel d = new DefaultTableModel(data, colName) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        return d;
+    }
     public static void createAndShowGUI(){
 //----------------------------COMPONENT----------------------------
         //----------------------NORTH----------------------
@@ -82,22 +104,8 @@ public class Interface{
         JButton res = new JButton("Reset dictionary");
         JButton ref = new JButton("Refresh page");
          //----------------------CENTER----------------------
-        String[] colName = {"No.","Slang", "Definition"};
-        DefaultTableModel tableModel = new DefaultTableModel(MapToArray(sl.slangList), colName) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        JTable tables = new JTable(tableModel);
-        tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-        // https://stackoverflow.com/a/43301100
-        tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        TableColumnModel colModel = tables.getColumnModel();
-        colModel.getColumn(0).setPreferredWidth(50);    
-        colModel.getColumn(1).setPreferredWidth(200);
-        colModel.getColumn(2).setPreferredWidth(750);
-        tables.setVisible(true);
+        JTable tables = new JTable(createModel(MapToArray(sl.slangList)));
+        setTable(tables);
         // JList<String> lists = new JList<String>();
         JScrollPane slist = new JScrollPane(tables);
 
@@ -206,6 +214,21 @@ public class Interface{
         addPage.setResizable(false); 
         addPage.setLocationRelativeTo(null);
 
+        JFrame extraaddPage = new JFrame("Add Page");
+        extraaddPage.setLayout(new BorderLayout());
+        JPanel quespann = new JPanel();
+        JLabel ques = new JLabel("<html> This slang is already exists <br> Do you want to add definition or overwrite it? </html>");
+        quespann.add(ques);
+        extraaddPage.add(quespann, BorderLayout.NORTH);
+        JPanel btnpan = new JPanel();
+        JButton ovwr = new JButton("Overwrite");
+        JButton adddef = new JButton("Add definition");
+        btnpan.add(ovwr);
+        btnpan.add(adddef);
+        extraaddPage.add(btnpan, BorderLayout.CENTER);
+        extraaddPage.pack();
+        extraaddPage.setResizable(false); 
+        extraaddPage.setLocationRelativeTo(null);
         //----------------------DELETE----------------------
         JPanel scontainer_delete = new JPanel();
         JPanel btncont_delete = new JPanel();
@@ -264,21 +287,8 @@ public class Interface{
         //----------------------NORTH----------------------
         WordSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                DefaultTableModel tableModel = new DefaultTableModel(MapToArray(sl.FindDef(searchbar.getText())), colName) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                };
-                tables.setModel(tableModel);
-                tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-                // https://stackoverflow.com/a/43301100
-                tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-                TableColumnModel colModel = tables.getColumnModel();
-                colModel.getColumn(0).setPreferredWidth(50);    
-                colModel.getColumn(1).setPreferredWidth(200);
-                colModel.getColumn(2).setPreferredWidth(750);
-                tables.setVisible(true);
+                tables.setModel(createModel(MapToArray(sl.FindDef(searchbar.getText())))); 
+                setTable(tables);
             }
         });
         DefSearch.addActionListener(new ActionListener() {
@@ -290,14 +300,7 @@ public class Interface{
                     }
                 };
                 tables.setModel(tableModel);
-                tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-                // https://stackoverflow.com/a/43301100
-                tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-                TableColumnModel colModel = tables.getColumnModel();
-                colModel.getColumn(0).setPreferredWidth(50);    
-                colModel.getColumn(1).setPreferredWidth(200);
-                colModel.getColumn(2).setPreferredWidth(750);
-                tables.setVisible(true);
+                setTable(tables);
             }
         });
         hisButton.addActionListener(new ActionListener() {
@@ -349,14 +352,7 @@ public class Interface{
                     }
                 };
                 tables.setModel(d);
-                tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-                // https://stackoverflow.com/a/43301100
-                tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-                TableColumnModel colModel = tables.getColumnModel();
-                colModel.getColumn(0).setPreferredWidth(50);    
-                colModel.getColumn(1).setPreferredWidth(200);
-                colModel.getColumn(2).setPreferredWidth(750);
-                tables.setVisible(true);
+                setTable(tables);
             }
         });       
         ref.addActionListener(new ActionListener() {
@@ -369,14 +365,7 @@ public class Interface{
                     }
                 };
                 tables.setModel(d);
-                tables.setFont(new Font("Verdana", Font.PLAIN, 12));
-                // https://stackoverflow.com/a/43301100
-                tables.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-                TableColumnModel colModel = tables.getColumnModel();
-                colModel.getColumn(0).setPreferredWidth(50);    
-                colModel.getColumn(1).setPreferredWidth(200);
-                colModel.getColumn(2).setPreferredWidth(750);
-                tables.setVisible(true);
+                setTable(tables);
             }
         });       
         quizz.addActionListener(new ActionListener() {
@@ -468,23 +457,68 @@ public class Interface{
         }); 
         abtn_add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                addPage.setVisible(false);
-                sl.AddSlangWord(slangbox_add.getText(), defbox_add.getText(), true);
-                String[] tmp = {Integer.toString(sl.slangList.size() - 1), slangbox_add.getText(), defbox_add.getText()};
-                DefaultTableModel d = (DefaultTableModel)tables.getModel();
-                d.addRow(tmp);
-                tables.setModel(d);
+                if(sl.slangList.get(slangbox_add.getText().toString().toUpperCase()) != null)
+                {
+                    extraaddPage.setVisible(true);
+                } else{
+                    sl.AddSlangWord(slangbox_add.getText(), defbox_add.getText(), false);
+                    String[] tmp = {Integer.toString(sl.slangList.size() - 1), slangbox_add.getText(), defbox_add.getText()};
+                    DefaultTableModel d = (DefaultTableModel)tables.getModel();
+                    d.addRow(tmp);
+                    tables.setModel(d);
+                    addPage.setVisible(false);
+                    slangbox_add.setText("");
+                    defbox_add.setText("");
+                }
             }
-        });        
+        });                
+        ovwr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sl.AddSlangWord(slangbox_add.getText(), defbox_add.getText(), false);
+                DefaultTableModel d = new DefaultTableModel(MapToArray(sl.slangList), colName) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                tables.setModel(d);
+                setTable(tables);
+                addPage.setVisible(false);
+                extraaddPage.setVisible(false);
+                slangbox_add.setText("");
+                defbox_add.setText("");
+           }
+        });         
+        adddef.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sl.AddSlangWord(slangbox_add.getText(), defbox_add.getText(), true);
+                // String[] tmp = {Integer.toString(sl.slangList.size() - 1), slangbox_add.getText(), defbox_add.getText()};
+                DefaultTableModel d = new DefaultTableModel(MapToArray(sl.slangList), colName) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                tables.setModel(d);
+                setTable(tables);
+                addPage.setVisible(false);
+                extraaddPage.setVisible(false);
+                addPage.setVisible(false);
+                extraaddPage.setVisible(false);
+                slangbox_add.setText("");
+                defbox_add.setText("");
+            }
+        });         
         abtn_delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                sl.DeleteSlangWord(getKeyFromIdx(row));
                 DefaultTableModel d = (DefaultTableModel)tables.getModel();
+                sl.DeleteSlangWord(d.getValueAt(row, 1).toString());
                 d.removeRow(row);
-                for(int i = row; i < sl.slangList.size(); i++)
+                for(int i = row; i < d.getRowCount(); i++)
                 {
                     d.setValueAt(Integer.toString(i), i, 0);
                 }
+                // System.out.println(row);
                 row = -1;
                 tables.setModel(d);
                 deletePage.setVisible(false);
@@ -502,6 +536,7 @@ public class Interface{
                 DefaultTableModel d = (DefaultTableModel)tables.getModel();
                 d.removeRow(row);
                 d.insertRow(row, tmp);
+                row = -1;
                 tables.setModel(d);
                 editPage.setVisible(false);
             }
@@ -511,7 +546,7 @@ public class Interface{
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 row = tables.rowAtPoint(evt.getPoint());
-                // System.out.println(row);
+                System.out.println(row);
             }
         });
 

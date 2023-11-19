@@ -106,18 +106,19 @@ public class SlangList {
   }
   public static String DeleteSlangWord(String slang)
   {
-    if(slangList.get(slang) != null)
+    if(slangList.get(slang.toUpperCase()) == null)
     {
+      return "Can't find the slang";
+      // Can't find slang
+    }else{
       slangList.remove(slang);
       return "Delete success";
       // Remove success
-    }else{
-      return "Can't find the slang";
-      // Can't find slang
     }
   }
   public static void AddSlangWord(String nslang, String ndef, boolean dup)
   {
+    nslang = nslang.toUpperCase();
     if(slangList.get(nslang) == null)
     {
       slangList.put(nslang, ndef);
@@ -125,15 +126,12 @@ public class SlangList {
     } else{
       // User choose duplicate/ add definition
       if(dup){
-        slangList.put(nslang, slangList.get(nslang) + ndef);
+        slangList.put(nslang, slangList.get(nslang) + " | " + ndef);
       }else{
-        //User choose overwrite
+        //User choose overwrite or add new slang
         slangList.put(nslang, ndef);
       }
-    
-
     }
-    
   }
   public static void Edit(String oldslang, String nslang, String ndef)
   {
